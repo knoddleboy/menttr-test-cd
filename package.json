@@ -1,5 +1,5 @@
 {
-  "name": "menttr-app-v2",
+  "name": "menttr-app",
   "scripts": {
     "dev": "pnpm --recursive --parallel run dev",
     "build": "pnpm --recursive --parallel run build"
