@@ -11,20 +11,20 @@ WORKDIR /app
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
 # Copy package.json files for all packages
-COPY ./packages/server/package.json ./packages/server/
-COPY ./packages/web/package.json ./packages/web/
+COPY packages/server/package.json ./packages/server/
+COPY packages/web/package.json ./packages/web/
 
 # Install dependencies
 RUN pnpm install --frozen-lockfile
 
 # Build stage for React app
 FROM base AS web-builder
-COPY ./packages/web ./packages/web
+COPY packages/web ./packages/web
 RUN pnpm --filter web build
 
 # Build stage for NestJS server
 FROM base AS server-builder
-COPY ./packages/server ./packages/server
+COPY packages/server ./packages/server
 RUN pnpm --filter server build
 
 # Production stage
@@ -37,7 +37,7 @@ WORKDIR /app
 
 # Copy workspace configuration
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-COPY ./packages/server/package.json ./packages/server/
+COPY packages/server/package.json ./packages/server/
 
 # Install only production dependencies
 RUN pnpm install --prod --frozen-lockfile
