@@ -1,0 +1,42 @@
+services:
+  postgres:
+    image: postgres:17
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: always
+
+  elasticsearch:
+    image: elasticsearch:8.17.5
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+    ports:
+      - "9200:9200"
+
+  rabbitmq:
+    image: rabbitmq:4-management-alpine
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  server:
+    build:
+      context: .
+      dockerfile: packages/server/Dockerfile
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+
+  embedding:
+    build:
+      context: ./packages/ml/embedding
+      dockerfile: Dockerfile
+
+volumes:
+  pgdata:
+  rabbitmq_data:
