@@ -18,18 +18,21 @@ jobs:
           username: ${{ vars.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_TOKEN }}
 
-      - name: Build and push server
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push server image
         uses: docker/build-push-action@v6
         with:
-          context: "{{defaultContext}}"
+          context: .
           dockerfile: ./packages/server/Dockerfile
           push: true
           tags: ${{ vars.DOCKER_USERNAME }}/server:latest
 
-      - name: Build and push embedding
+      - name: Build and push embedding image
         uses: docker/build-push-action@v6
         with:
-          context: "{{defaultContext}}/packages/ml/embedding"
+          context: ./packages/ml/embedding
           dockerfile: Dockerfile
           push: true
           tags: ${{ vars.DOCKER_USERNAME }}/embedding:latest
