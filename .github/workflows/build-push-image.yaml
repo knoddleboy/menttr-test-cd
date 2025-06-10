@@ -1,11 +1,12 @@
-name: Build and push image to Docker Hub
+name: Build and Push to Docker Hub
 
 on:
   push:
-    branches: ["main"]
+    branches:
+      - main
 
 jobs:
-  docker:
+  build-and-push:
     runs-on: ubuntu-latest
     steps:
       - name: Login to Docker Hub
@@ -13,12 +14,19 @@ jobs:
         with:
           username: ${{ vars.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_TOKEN }}
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      - name: Build and push
+
+      - name: Build and push server
         uses: docker/build-push-action@v6
         with:
+          context: ./packages/server
+          dockerfile: ./packages/server/Dockerfile
           push: true
-          tags: user/app:latest
+          tags: ${{ vars.DOCKER_USERNAME }}/service1:latest
+
+      - name: Build and push embedding
+        uses: docker/build-push-action@v6
+        with:
+          context: ./packages/ml/embedding
+          dockerfile: ./packages/ml/embedding/Dockerfile
+          push: true
+          tags: ${{ vars.DOCKER_USERNAME }}/service2:latest
