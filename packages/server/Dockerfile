@@ -19,12 +19,12 @@ RUN pnpm install --frozen-lockfile
 
 # Build stage for React app
 FROM base AS web-builder
-COPY packages/web ./packages/web
+COPY ./packages/web ./packages/web
 RUN pnpm --filter web build
 
 # Build stage for NestJS server
 FROM base AS server-builder
-COPY packages/server ./packages/server
+COPY ./packages/server ./packages/server
 RUN pnpm --filter server build
 
 # Production stage
