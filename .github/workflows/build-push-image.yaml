@@ -9,6 +9,9 @@ jobs:
   build-and-push:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
@@ -21,7 +24,7 @@ jobs:
           context: ./packages/server
           dockerfile: ./packages/server/Dockerfile
           push: true
-          tags: ${{ vars.DOCKER_USERNAME }}/service1:latest
+          tags: ${{ vars.DOCKER_USERNAME }}/server:latest
 
       - name: Build and push embedding
         uses: docker/build-push-action@v6
@@ -29,4 +32,4 @@ jobs:
           context: ./packages/ml/embedding
           dockerfile: ./packages/ml/embedding/Dockerfile
           push: true
-          tags: ${{ vars.DOCKER_USERNAME }}/service2:latest
+          tags: ${{ vars.DOCKER_USERNAME }}/embedding:latest
