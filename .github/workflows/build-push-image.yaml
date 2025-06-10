@@ -12,6 +12,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Detect changes in embedding
+        id: check_embedding
+        run: |
+          if git diff --quiet HEAD^ HEAD -- packages/ml/embedding; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
@@ -30,6 +39,7 @@ jobs:
           tags: ${{ vars.DOCKER_USERNAME }}/server:latest
 
       - name: Build and push embedding image
+        if: steps.check_embedding.outputs.changed == 'true'
         uses: docker/build-push-action@v6
         with:
           context: ./packages/ml/embedding
