@@ -21,7 +21,7 @@ jobs:
       - name: Build and push server
         uses: docker/build-push-action@v6
         with:
-          context: .
+          context: "{{defaultContext}}"
           dockerfile: ./packages/server/Dockerfile
           push: true
           tags: ${{ vars.DOCKER_USERNAME }}/server:latest
@@ -29,7 +29,7 @@ jobs:
       - name: Build and push embedding
         uses: docker/build-push-action@v6
         with:
-          context: ./packages/ml/embedding
+          context: "{{defaultContext}}/packages/ml/embedding"
           dockerfile: Dockerfile
           push: true
           tags: ${{ vars.DOCKER_USERNAME }}/embedding:latest
