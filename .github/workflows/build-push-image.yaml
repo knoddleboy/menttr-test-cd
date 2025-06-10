@@ -12,12 +12,12 @@ jobs:
       matrix:
         service:
           - name: server
-            context: . # Root context to include package.json, etc.
-            dockerfile: packages/server/Dockerfile
+            context: . # Root context for pnpm workspace files
+            file: packages/server/Dockerfile # Use 'file' instead of 'dockerfile'
             image: ${{ vars.DOCKER_USERNAME }}/server
           - name: embedding
-            context: . # Root context for pnpm workspace files
-            dockerfile: packages/ml/embedding/Dockerfile # Correct path
+            context: packages/ml/embedding # Embedding context is fine
+            file: packages/ml/embedding/Dockerfile # Use 'file' for consistency
             image: ${{ vars.DOCKER_USERNAME }}/embedding
     steps:
       - name: Checkout
@@ -38,8 +38,8 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: ${{ matrix.service.context }}
-          dockerfile: ${{ matrix.service.dockerfile }}
+          file: ${{ matrix.service.file }} # Use 'file' to specify Dockerfile
           push: true
           tags: ${{ matrix.service.image }}:latest
-          cache-from: type=gha # Cache for faster builds
+          cache-from: type=gha
           cache-to: type=gha,mode=max
